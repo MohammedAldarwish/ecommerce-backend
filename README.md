@@ -15,7 +15,7 @@ A fully functional e-commerce backend built with Django and Django REST Framewor
 
 - Django
 - Django REST Framework
-- SQLite (you can switch to PostgreSQL/MySQL)
+- MySql (you can switch to PostgreSQL/SQLite)
 - Token Authentication
 
 ## ⚠️ Notes
