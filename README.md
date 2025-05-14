@@ -28,10 +28,12 @@ A fully functional e-commerce backend built with Django and Django REST Framewor
 
 ### 🔐 Authentication
 
-| Method | Endpoint             | Description           |
-|--------|----------------------|-----------------------|
-| POST   | `/api/token/`        | To get the jwt token  |
-| POST   | `/api/toekn/refresh/`| to refresh your token |
+| Method | Endpoint                | Description           |
+|--------|-------------------------|-----------------------|
+| POST   | `/api/token/`           | To get the jwt token  |
+| POST   | `/api/toekn/refresh/`   | to refresh your token |
+| POST   | `api/accounts/login/`   | to login              |
+| POST   | `api/accounts/register/`| to register           |
 
 ---
 
