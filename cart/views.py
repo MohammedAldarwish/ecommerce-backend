@@ -5,16 +5,28 @@ from .serializers import CartSerializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
+
 
 class CartViewSet(viewsets.ModelViewSet):
+    """
+    Handles all cart-related API operations for authenticated users:
+    - Prevents creating multiple carts per user.
+    - Adds products to the user's cart, checking stock availability.
+    - Allows viewing the current cart contents.
+    - Updates product quantities inside the cart.
+    - Removes products from the cart.
+    - Uses custom actions for add/update/remove operations.
+    """
+
     serializer_class = CartSerializers
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return Cart.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def create(self, request, *args, **kwargs):
+        return Response({"detail": "You already have a cart. You can't create another one."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @action(detail=False, methods=['post'])
     def add_product_to_cart(self, request):
@@ -67,7 +79,7 @@ class CartViewSet(viewsets.ModelViewSet):
         except (Product.DoesNotExist, Cart.DoesNotExist, CartProduct.DoesNotExist):
             return Response({"detail": "Product not found in cart."}, status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['delete'])
     def remove_product(self, request):
         product_id = request.data.get('id')
 

@@ -1,6 +1,17 @@
 # E-commerce Backend API
 
-A fully functional e-commerce backend built with Django and Django REST Framework (DRF). This project supports user authentication, product management, shopping cart operations, and order checkout with stock validation.
+A complete backend for an e-commerce app built with Django and DRF, supporting user auth, product & cart management, and checkout with stock validation.
+
+Features:
+- Token-based auth (register/login)
+- Product and category CRUD with admin control
+- Cart operations (add, update, remove)
+- Order checkout with real-time stock update
+- Admin panel management
+
+APIs cover auth, products, cart, and orders with clear endpoints.
+
+Easy to set up and extend for your own e-commerce projects.
 
 ## 🚀 Features
 
@@ -15,25 +26,20 @@ A fully functional e-commerce backend built with Django and Django REST Framewor
 
 - Django
 - Django REST Framework
-- MySql (you can switch to PostgreSQL/SQLite)
+- SQLite (you can switch to PostgreSQL/MySql)
 - Token Authentication
-
-## ⚠️ Notes
-
-- Payment integration is **not yet implemented**
-- This is a learning/demo project, but structured in a clean, extendable way
 
 
 ## 📡 API Endpoints
 
 ### 🔐 Authentication
 
-| Method | Endpoint                | Description           |
-|--------|-------------------------|-----------------------|
-| POST   | `/api/token/`           | To get the jwt token  |
-| POST   | `/api/toekn/refresh/`   | to refresh your token |
-| POST   | `api/accounts/login/`   | to login              |
-| POST   | `api/accounts/register/`| to register           |
+| Method | Endpoint                 | Description           |
+|--------|--------------------------|-----------------------|
+| POST   | `/api/token/`            | To get the jwt token  |
+| POST   | `/api/toekn/refresh/`    | to refresh your token |
+| POST   | `/api/accounts/login/`   | to login              |
+| POST   | `/api/accounts/register/`| to register           |
 
 ---
 
@@ -41,9 +47,9 @@ A fully functional e-commerce backend built with Django and Django REST Framewor
 
 | Method | Endpoint                | Description               |
 |--------|-------------------------|---------------------------|
-| GET    | `/product/product/`     | List all products         |
-| POST   | `/product/product/`     | Create a product (admin)  |
-| GET    | `/product/product/{id}/`| Retrieve product details  |
+| GET    | `/api/product/`         | List all products         |
+| POST   | `/api/product/`         | Create a product (admin)  |
+| GET    | `/api/product/{id}/`    | Retrieve product details  |
 | PUT    | `/api/product/{id}/`    | Update product (admin)    |
 | DELETE | `/api/product/{id}/`    | Delete product (admin)    |
 
@@ -52,28 +58,77 @@ A fully functional e-commerce backend built with Django and Django REST Framewor
 
 ### 🛒 Cart
 
-| Method | Endpoint                          | Description                |
-|--------|-----------------------------------|----------------------------|
-| GET    | `/cart/cart/view_cart/`           | View user's cart           |
-| POST   | `/cart/cart/add_product_to_cart/` | Add product to cart        |
-| POST   | `/cart/cart/update_quantity/`     | Update quantity in cart    |
-| POST   | `/cart/cart/remove_product/`      | Remove product from cart   |
+| Method | Endpoint                         | Description                |
+|--------|----------------------------------|----------------------------|
+| GET    | `/api/cart/view_cart/`           | View user's cart           |
+| POST   | `/api/cart/add_product_to_cart/` | Add product to cart        |
+| POST   | `/api/cart/update_quantity/`     | Update quantity in cart    |
+| POST   | `/api/cart/remove_product/`      | Remove product from cart   |
 
 ---
 
 
-| Method | Endpoint          | Description          |
-|--------|-------------------|----------------------|
-| POST   | `/order/checkout/`| Place order from cart|
+| Method | Endpoint              | Description          |
+|--------|-----------------------|----------------------|
+| POST   | `/api/order/checkout/`| Place order from cart|
 
 
 ## ✅ How to Run
 
 1. Clone the repo
-2. Install requirements: `pip install -r requirements.txt`
-3. Migrate DB: `python manage.py migrate`
-4. Create superuser: `python manage.py createsuperuser`
-5. Run server: `python manage.py runserver`
+2. cd ecommere-backend
+3. Install requirements: `pip install -r requirements.txt`
+4. Migrate DB: `python manage.py migrate`
+5. Create superuser: `python manage.py createsuperuser`
+6. Run server: `python manage.py runserver`
+
+
+
+
+## How to Get Stripe Secret Key and Webhook Secret
+
+<details>
+  <summary>How to get Stripe Secret Key</summary>
+
+  1. Go to [Stripe Dashboard](https://dashboard.stripe.com/login) and log in.
+  2. Navigate to **Developers** > **API keys**.
+  3. Copy your **Secret Key** under Standard keys.
+  4. Keep it secret and use it in your project .env file.
+
+</details>
+
+<details>
+  <summary>How to get Stripe Webhook Signing Secret</summary>
+
+  1. In Stripe Dashboard, go to **Developers** > **Webhooks**.
+  2. Click **Add endpoint** and enter your webhook URL (e.g., `https://yourdomain.com/api/stripe/webhook/`).
+  3. Select the events you want to listen to, like `checkout.session.completed`.
+  4. After saving, click on the webhook and copy the **Signing Secret**.
+  5. Use this secret in your project to verify incoming webhook requests.
+
+</details>
+
+<details>
+  <summary>How to use Stripe CLI if you don't have a domain name</summary>
+
+  1. Download and install Stripe CLI from the official site: [https://stripe.com/docs/stripe-cli](https://stripe.com/docs/stripe-cli)
+  2. Login to Stripe CLI by running:
+     ```
+     stripe login
+     ```
+  3. Forward webhook events to your local server by running:
+     ```
+     stripe listen --forward-to localhost:8000/api/order/webhook/
+     ```
+  4. This will generate a webhook signing secret in the CLI output. Copy it and use it in your project settings.
+   4. This will generate a webhook signing secret in the CLI output. It looks like this:
+     ```
+     Ready! Your webhook signing secret is whsec_XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+     ```
+  5. Now Stripe will forward webhook events to your local machine without needing a public domain.
+
+</details>
+
 
 ---
 
