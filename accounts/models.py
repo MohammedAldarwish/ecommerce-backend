@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 class CustomUserManager(BaseUserManager):
+    """
+    Custom manager for the CustomUser model:
+    - Handles user creation with email instead of username.
+    - Includes methods to create regular users and superusers.
+    - Ensures that email is provided and normalized.
+    """
+
     def create_user(self, email, name, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
@@ -17,6 +24,13 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, name, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """
+    Custom user model that uses email as the unique identifier:
+    - Contains fields for email, name, and status flags (active, staff).
+    - Uses CustomUserManager for user creation logic.
+    - Supports Django's authentication and permission system.
+    """
+
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=150)
     is_active = models.BooleanField(default=True)
